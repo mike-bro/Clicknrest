@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Click N Rest</title>
+
+<style>
+body {
+    margin: 0;
+    font-family: Arial;
+    background: #0b1220;
+    color: white;
+}
+
+header {
+    background: #111827;
+    padding: 18px;
+    text-align: center;
+    font-size: 22px;
+    font-weight: bold;
+}
+
+.container {
+    max-width: 1000px;
+    margin: auto;
+    padding: 20px;
+}
+
+.card {
+    background: #1f2937;
+    padding: 15px;
+    border-radius: 12px;
+    margin-top: 15px;
+}
+
+input, select {
+    width: 100%;
+    padding: 10px;
+    margin-top: 10px;
+    border-radius: 8px;
+    border: none;
+}
+
+button {
+    width: 100%;
+    padding: 10px;
+    margin-top: 10px;
+    border: none;
+    border-radius: 8px;
+    background: #38bdf8;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+button:hover {
+    background: #0ea5e9;
+}
+
+.rooms {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 10px;
+}
+
+.room {
+    background: #111827;
+    padding: 12px;
+    border-radius: 10px;
+    border: 1px solid #2b3445;
+}
+
+.hidden { display: none; }
+
+.badge {
+    background: #22c55e;
+    padding: 5px 8px;
+    border-radius: 6px;
+    font-size: 12px;
+}
+</style>
+</head>
+
+<body>
+
+<header>🏨 Click N Rest Booking System</header>
+
+<div class="container">
+
+<!-- LOGIN -->
+<div class="card" id="loginBox">
+    <h2>Login / Signup</h2>
+    <input id="email" placeholder="Email">
+    <input id="password" type="password" placeholder="Password">
+
+    <button onclick="signup()">Create Account</button>
+    <button onclick="login()">Login</button>
+
+    <p id="msg"></p>
+</div>
+
+<!-- APP -->
+<div id="app" class="hidden">
+
+    <div class="card">
+        <h2>🏨 Book a Room</h2>
+
+        <input id="name" placeholder="Full Name">
+        <input id="checkin" type="date">
+        <input id="checkout" type="date">
+
+        <select id="roomType">
+            <option>Standard Room</option>
+            <option>Deluxe Room</option>
+            <option>Luxury Suite</option>
+        </select>
+
+        <button onclick="bookRoom()">Book Now</button>
+        <p id="bookMsg"></p>
+    </div>
+
+    <div class="card">
+        <h2>🏠 Rooms</h2>
+        <div class="rooms">
+            <div class="room">Standard</div>
+            <div class="room">Deluxe</div>
+            <div class="room">Luxury Suite</div>
+        </div>
+    </div>
+
+    <!-- ADMIN -->
+    <div class="card hidden" id="adminPanel">
+        <h2>🧑‍💼 Admin Panel</h2>
+        <button onclick="loadBookings()">Load All Bookings</button>
+        <div id="bookingList"></div>
+    </div>
+
+    <button onclick="logout()">Logout</button>
+</div>
+
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } 
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+import { getFirestore, collection, addDoc, getDocs } 
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+// 🔴 PUT YOUR FIREBASE CONFIG HERE
+const firebaseConfig = {
+  apiKey: "YOUR_API_KEY",
+  authDomain: "YOUR_AUTH_DOMAIN",
+  projectId: "YOUR_PROJECT_ID",
+  storageBucket: "YOUR_BUCKET",
+  messagingSenderId: "YOUR_ID",
+  appId: "YOUR_APP_ID"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+// 👑 ADMIN EMAIL (ONLY YOU)
+const ADMIN_EMAIL = "youradmin@gmail.com";
+
+// AUTH
+window.signup = async function() {
+    let email = emailEl().email;
+    let password = emailEl().password;
+
+    try {
+        await createUserWithEmailAndPassword(auth, email, password);
+        document.getElementById("msg").innerText = "Account created!";
+    } catch(e) {
+        document.getElementById("msg").innerText = e.message;
+    }
+}
+
+window.login = async function() {
+    let {email, password} = emailEl();
+
+    try {
+        await signInWithEmailAndPassword(auth, email, password);
+    } catch(e) {
+        document.getElementById("msg").innerText = e.message;
+    }
+}
+
+window.logout = function() {
+    signOut(auth);
+}
+
+// AUTH STATE
+onAuthStateChanged(auth, user => {
+    if(user) {
+        document.getElementById("loginBox").classList.add("hidden");
+        document.getElementById("app").classList.remove("hidden");
+
+        if(user.email === ADMIN_EMAIL) {
+            document.getElementById("adminPanel").classList.remove("hidden");
+        }
+    } else {
+        document.getElementById("loginBox").classList.remove("hidden");
+        document.getElementById("app").classList.add("hidden");
+    }
+});
+
+// BOOKING
+window.bookRoom = async function() {
+    let name = document.getElementById("name").value;
+    let checkin = document.getElementById("checkin").value;
+    let checkout = document.getElementById("checkout").value;
+    let room = document.getElementById("roomType").value;
+
+    if(!name || !checkin || !checkout) {
+        document.getElementById("bookMsg").innerText = "Fill all fields";
+        return;
+    }
+
+    await addDoc(collection(db, "bookings"), {
+        name,
+        checkin,
+        checkout,
+        room,
+        created: new Date(),
+        status: "pending"
+    });
+
+    document.getElementById("bookMsg").innerText = "Booking successful!";
+}
+
+// ADMIN LOAD
+window.loadBookings = async function() {
+    const snap = await getDocs(collection(db, "bookings"));
+
+    let html = "";
+
+    snap.forEach(doc => {
+        let d = doc.data();
+        html += `
+        <div style="margin-top:10px;padding:10px;background:#111827;border-radius:8px;">
+            <b>${d.name}</b><br>
+            ${d.room}<br>
+            ${d.checkin} → ${d.checkout}<br>
+            <span class="badge">${d.status}</span>
+        </div>`;
+    });
+
+    document.getElementById("bookingList").innerHTML = html;
+}
+
+function emailEl() {
+    return {
+        email: document.getElementById("email").value,
+        password: document.getElementById("password").value
+    };
+}
+</script>
