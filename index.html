@@ -234,14 +234,10 @@ return JSON.parse(
 localStorage.getItem("users")
 ) || [];
 }
-
 function registerUser(){
 
-const email =
-document.getElementById("email").value;
-
-const password =
-document.getElementById("password").value;
+const email = document.getElementById("email").value;
+const password = document.getElementById("password").value;
 
 if(!email || !password){
 showToast("Fill all fields");
@@ -250,7 +246,7 @@ return;
 
 let users = getUsers();
 
-if(users.find(u=>u.email===email)){
+if(users.find(u => u.email === email)){
 showToast("User already exists");
 return;
 }
@@ -263,10 +259,16 @@ bookings:[]
 
 saveUsers(users);
 
+// 👇 AUTO LOGIN AFTER REGISTER
+localStorage.setItem("currentUser", email);
+currentUser = email;
+
 showToast("Account created");
 
+loadApp(); // switch to app view
 }
 
+  
 function loginUser(){
 
 const email =
