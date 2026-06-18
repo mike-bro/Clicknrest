@@ -3,409 +3,176 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ClickNRest</title>
-
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
-
-<style>
-*{
-margin:0;
-padding:0;
-box-sizing:border-box;
-font-family:Poppins,sans-serif;
-}
-
-body{
-background:linear-gradient(135deg,#0f172a,#1e3a8a);
-min-height:100vh;
-color:white;
-padding:20px;
-}
-
-.container{
-max-width:500px;
-margin:auto;
-}
-
-header{
-text-align:center;
-margin-bottom:25px;
-}
-
-header h1{
-font-size:2.5rem;
-}
-
-.card{
-background:rgba(255,255,255,.08);
-backdrop-filter:blur(15px);
-border-radius:20px;
-padding:20px;
-margin-bottom:15px;
-}
-
-input{
-width:100%;
-padding:14px;
-margin:8px 0;
-border:none;
-border-radius:12px;
-background:#1e293b;
-color:white;
-}
-
-button{
-width:100%;
-padding:14px;
-border:none;
-border-radius:12px;
-background:#2563eb;
-color:white;
-font-weight:600;
-cursor:pointer;
-margin-top:10px;
-}
-
-button:hover{
-opacity:.9;
-}
-
-.room{
-display:flex;
-justify-content:space-between;
-align-items:center;
-padding:15px 0;
-border-bottom:1px solid rgba(255,255,255,.1);
-}
-
-.room button{
-width:auto;
-padding:10px 18px;
-}
-
-.booking{
-background:#1e293b;
-padding:15px;
-border-radius:12px;
-margin-top:10px;
-}
-
-.hidden{
-display:none;
-}
-
-#toast{
-position:fixed;
-bottom:20px;
-left:50%;
-transform:translateX(-50%);
-background:#2563eb;
-padding:12px 20px;
-border-radius:12px;
-display:none;
-z-index:1000;
-}
-
-.userBar{
-display:flex;
-justify-content:space-between;
-align-items:center;
-margin-bottom:15px;
-}
-</style>
+<title>Click N Rest — Find your perfect stay</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css">
+<link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 
-<div class="container">
-
-<header>
-<h1>🏨 ClickNRest</h1>
-<p>Easy Hotel Booking</p>
-</header>
-
-<div id="auth" class="card">
-
-<h2>Login / Register</h2>
-
-<input id="email" type="email" placeholder="Email">
-
-<input id="password" type="password" placeholder="Password">
-
-<button onclick="registerUser()">
-Create Account
-</button>
-
-<button onclick="loginUser()">
-Login
-</button>
-
+<div class="promo-bar">
+  <i class="ti ti-tag" aria-hidden="true"></i>
+  Sandbox mode active — connect your live Liteapi key to unlock full pricing and availability
 </div>
 
-<div id="app" class="hidden">
+<nav>
+  <div class="logo" onclick="window.location.href='index.html'">
+    <div class="logo-icon"><i class="ti ti-moon-stars" aria-hidden="true"></i></div>
+    Click N Rest
+  </div>
+  <div class="nav-links">
+    <a class="active" onclick="document.getElementById('hotelsSection').scrollIntoView({behavior:'smooth'})">Hotels</a>
+    <a onclick="document.getElementById('destinationsSection').scrollIntoView({behavior:'smooth'})">Destinations</a>
+    <a>About</a>
+  </div>
+</nav>
 
-<div class="card userBar">
-<span id="welcome"></span>
-<button onclick="logout()" style="width:auto">
-Logout
-</button>
+<div class="hero">
+  <div class="hero-pill"><i class="ti ti-globe" aria-hidden="true"></i> Worldwide hotel booking</div>
+  <h1>Find your perfect stay,<br><span>anywhere on earth</span></h1>
+  <p>Verified hotels across every destination. One click to book, one email away if you need help.</p>
+
+  <div class="search-bar" id="searchBar">
+    <div class="sb-field" id="destField" style="flex:1.4;" onclick="closeAll()">
+      <i class="ti ti-map-pin icon" aria-hidden="true"></i>
+      <div class="sb-inner">
+        <label>Destination</label>
+        <select id="countrySelect" style="border:none;outline:none;font-size:13px;color:#0f172a;font-family:inherit;background:transparent;width:100%;padding-bottom:10px;cursor:pointer;">
+          <option value="US">🇺🇸 United States</option>
+          <option value="FR">🇫🇷 France</option>
+          <option value="GB">🇬🇧 United Kingdom</option>
+          <option value="JP">🇯🇵 Japan</option>
+          <option value="AE">🇦🇪 UAE</option>
+          <option value="AU">🇦🇺 Australia</option>
+          <option value="ZA">🇿🇦 South Africa</option>
+          <option value="MX">🇲🇽 Mexico</option>
+          <option value="IT">🇮🇹 Italy</option>
+          <option value="ES">🇪🇸 Spain</option>
+          <option value="TH">🇹🇭 Thailand</option>
+          <option value="IN">🇮🇳 India</option>
+          <option value="BR">🇧🇷 Brazil</option>
+          <option value="GR">🇬🇷 Greece</option>
+          <option value="TR">🇹🇷 Turkey</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="sb-field" id="checkinField" onclick="toggleCal('checkin')">
+      <i class="ti ti-calendar icon" aria-hidden="true"></i>
+      <div class="sb-inner">
+        <label>Check-in</label>
+        <span id="checkinLabel" class="placeholder">Select date</span>
+      </div>
+      <div class="cal-popup" id="checkinCal"></div>
+    </div>
+
+    <div class="sb-field" id="checkoutField" onclick="toggleCal('checkout')">
+      <i class="ti ti-calendar-due icon" aria-hidden="true"></i>
+      <div class="sb-inner">
+        <label>Check-out</label>
+        <span id="checkoutLabel" class="placeholder">Select date</span>
+      </div>
+      <div class="cal-popup right" id="checkoutCal"></div>
+    </div>
+
+    <div class="sb-guests" id="guestsField" onclick="toggleGuests(event)">
+      <i class="ti ti-users icon" aria-hidden="true"></i>
+      <div class="sb-inner">
+        <label>Guests</label>
+        <span id="guestsLabel">2 adults</span>
+      </div>
+      <div class="guests-popup" id="guestsPopup">
+        <div class="g-row">
+          <div><div class="g-label">Adults</div><div class="g-sub">Age 18+</div></div>
+          <div class="g-controls">
+            <button class="g-btn" onclick="changeGuest(event,'adults',-1)">−</button>
+            <span class="g-count" id="adultsCount">2</span>
+            <button class="g-btn" onclick="changeGuest(event,'adults',1)">+</button>
+          </div>
+        </div>
+        <div class="g-row">
+          <div><div class="g-label">Children</div><div class="g-sub">Ages 2–17</div></div>
+          <div class="g-controls">
+            <button class="g-btn" onclick="changeGuest(event,'children',-1)">−</button>
+            <span class="g-count" id="childrenCount">0</span>
+            <button class="g-btn" onclick="changeGuest(event,'children',1)">+</button>
+          </div>
+        </div>
+        <div class="g-row">
+          <div><div class="g-label">Rooms</div></div>
+          <div class="g-controls">
+            <button class="g-btn" onclick="changeGuest(event,'rooms',-1)">−</button>
+            <span class="g-count" id="roomsCount">1</span>
+            <button class="g-btn" onclick="changeGuest(event,'rooms',1)">+</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <button class="search-btn" onclick="searchHotels()">
+      <i class="ti ti-search" aria-hidden="true"></i> Search
+    </button>
+  </div>
+  <div class="date-err" id="dateErr"></div>
 </div>
 
-<div class="card">
-
-<h2>Available Rooms</h2>
-
-<div class="room">
-<div>
-<h3>Standard Room</h3>
-<p>$99/night</p>
-</div>
-<button onclick="bookRoom('Standard Room')">
-Book
-</button>
+<div class="trusted">
+  <div class="trust-item"><i class="ti ti-shield-check" aria-hidden="true"></i> Verified listings only</div>
+  <div class="trust-item"><i class="ti ti-mail" aria-hidden="true"></i> mmauer@clicknrest.net</div>
+  <div class="trust-item"><i class="ti ti-world" aria-hidden="true"></i> Hotels worldwide</div>
+  <div class="trust-item"><i class="ti ti-lock" aria-hidden="true"></i> Secure booking</div>
 </div>
 
-<div class="room">
-<div>
-<h3>Deluxe Room</h3>
-<p>$149/night</p>
+<section style="background:#fff;" id="hotelsSection">
+  <div class="section-eye">Live hotels</div>
+  <h2 id="hotelsHeading">Featured hotels</h2>
+  <p class="sub" id="hotelsSub">Loading real hotels from our network…</p>
+  <div class="filter-bar" id="filterBar" style="display:none;">
+    <button class="filter-btn active" onclick="filterStars(0,this)">All</button>
+    <button class="filter-btn" onclick="filterStars(5,this)">★★★★★</button>
+    <button class="filter-btn" onclick="filterStars(4,this)">★★★★</button>
+    <button class="filter-btn" onclick="filterStars(3,this)">★★★</button>
+  </div>
+  <div id="hotelsContainer" class="loading-grid">
+    <div class="skeleton"></div><div class="skeleton"></div>
+    <div class="skeleton"></div><div class="skeleton"></div>
+  </div>
+</section>
+
+<section class="dest-section" id="destinationsSection">
+  <div class="section-eye">Browse by region</div>
+  <h2>Where do you want to go?</h2>
+  <p class="sub">We cover hotels across every region of the world.</p>
+  <div class="dest-grid">
+    <div class="dcard" onclick="loadByCountry('FR','Europe')"><div class="dcard-icon">🗼</div><div class="dcard-name">Europe</div><div class="dcard-hint">Paris, Rome…</div></div>
+    <div class="dcard" onclick="loadByCountry('JP','Asia')"><div class="dcard-icon">🌴</div><div class="dcard-name">Asia</div><div class="dcard-hint">Tokyo, Bali…</div></div>
+    <div class="dcard" onclick="loadByCountry('US','Americas')"><div class="dcard-icon">🏙️</div><div class="dcard-name">Americas</div><div class="dcard-hint">New York, Miami…</div></div>
+    <div class="dcard" onclick="loadByCountry('ZA','Africa')"><div class="dcard-icon">🌍</div><div class="dcard-name">Africa</div><div class="dcard-hint">Cape Town…</div></div>
+    <div class="dcard" onclick="loadByCountry('AE','Middle East')"><div class="dcard-icon">🏨</div><div class="dcard-name">Middle East</div><div class="dcard-hint">Dubai, Doha…</div></div>
+    <div class="dcard" onclick="loadByCountry('AU','Oceania')"><div class="dcard-icon">🦘</div><div class="dcard-name">Oceania</div><div class="dcard-hint">Sydney, Auckland…</div></div>
+  </div>
+</section>
+
+<section style="background:#f7f9fc;">
+  <div class="section-eye">How it works</div>
+  <h2>Book in three simple steps</h2>
+  <div class="how-grid">
+    <div class="how-item"><div class="how-num">1</div><div class="how-title">Search your destination</div><div class="how-desc">Pick a country, your travel dates, and number of guests.</div></div>
+    <div class="how-item"><div class="how-num">2</div><div class="how-title">Pick your hotel</div><div class="how-desc">Filter by star rating and browse verified properties, then view live rates for each room type.</div></div>
+    <div class="how-item"><div class="how-num">3</div><div class="how-title">Confirm your booking</div><div class="how-desc">Review your stay and confirm — you'll get a booking reference instantly.</div></div>
+  </div>
+</section>
+
+<div class="contact-strip">
+  <h2>Questions about a booking?</h2>
+  <p>Our team is here to help — reach us directly by email.</p>
+  <a class="contact-btn" href="mailto:mmauer@clicknrest.net"><i class="ti ti-mail" aria-hidden="true"></i> mmauer@clicknrest.net</a>
 </div>
-<button onclick="bookRoom('Deluxe Room')">
-Book
-</button>
-</div>
 
-<div class="room">
-<div>
-<h3>Luxury Suite</h3>
-<p>$299/night</p>
-</div>
-<button onclick="bookRoom('Luxury Suite')">
-Book
-</button>
-</div>
+<footer>
+  <span>Click N Rest</span> — Verified hotel bookings worldwide · © 2026
+</footer>
 
-</div>
-
-<div class="card">
-
-<h2>Your Bookings</h2>
-
-<div id="bookings">
-No bookings yet.
-</div>
-
-</div>
-
-</div>
-
-</div>
-
-<div id="toast"></div>
-
-<script>
-
-let currentUser =
-localStorage.getItem("currentUser");
-
-function showToast(text){
-
-const toast =
-document.getElementById("toast");
-
-toast.innerText = text;
-
-toast.style.display = "block";
-
-setTimeout(()=>{
-toast.style.display="none";
-},3000);
-
-}
-
-function saveUsers(users){
-localStorage.setItem(
-"users",
-JSON.stringify(users)
-);
-}
-
-function getUsers(){
-return JSON.parse(
-localStorage.getItem("users")
-) || [];
-}
-function registerUser(){
-
-const email = document.getElementById("email").value;
-const password = document.getElementById("password").value;
-
-if(!email || !password){
-showToast("Fill all fields");
-return;
-}
-
-let users = getUsers();
-
-if(users.find(u => u.email === email)){
-showToast("User already exists");
-return;
-}
-
-users.push({
-email,
-password,
-bookings:[]
-});
-
-saveUsers(users);
-
-// 👇 AUTO LOGIN AFTER REGISTER
-localStorage.setItem("currentUser", email);
-currentUser = email;
-
-showToast("Account created");
-
-loadApp(); // switch to app view
-}
-
-  
-function loginUser(){
-
-const email =
-document.getElementById("email").value;
-
-const password =
-document.getElementById("password").value;
-
-const users = getUsers();
-
-const user =
-users.find(
-u =>
-u.email===email &&
-u.password===password
-);
-
-if(!user){
-showToast("Invalid login");
-return;
-}
-
-localStorage.setItem(
-"currentUser",
-email
-);
-
-currentUser = email;
-
-loadApp();
-
-showToast("Welcome!");
-
-}
-
-function logout(){
-
-localStorage.removeItem(
-"currentUser"
-);
-
-currentUser = null;
-
-document
-.getElementById("app")
-.classList.add("hidden");
-
-document
-.getElementById("auth")
-.classList.remove("hidden");
-
-}
-
-function bookRoom(room){
-
-let users = getUsers();
-
-let user =
-users.find(
-u=>u.email===currentUser
-);
-
-user.bookings.push({
-room,
-date:new Date()
-.toLocaleString()
-});
-
-saveUsers(users);
-
-loadBookings();
-
-showToast(room + " booked!");
-
-}
-
-function loadBookings(){
-
-let users = getUsers();
-
-let user =
-users.find(
-u=>u.email===currentUser
-);
-
-let html="";
-
-if(user.bookings.length===0){
-
-html="No bookings yet.";
-
-}else{
-
-user.bookings.forEach(b=>{
-
-html += `
-<div class="booking">
-<strong>${b.room}</strong>
-<br>
-${b.date}
-</div>
-`;
-
-});
-
-}
-
-document
-.getElementById("bookings")
-.innerHTML = html;
-
-}
-
-function loadApp(){
-
-document
-.getElementById("auth")
-.classList.add("hidden");
-
-document
-.getElementById("app")
-.classList.remove("hidden");
-
-document
-.getElementById("welcome")
-.innerText =
-currentUser;
-
-loadBookings();
-
-}
-
-if(currentUser){
-loadApp();
-}
-
-</script>
-
+<script src="js/common.js"></script>
+<script src="js/index.js"></script>
 </body>
 </html>

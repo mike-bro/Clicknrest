@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Confirm your booking — Click N Rest</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div class="promo-bar">
+  <i class="ti ti-tag" aria-hidden="true"></i>
+  Payments run through Stripe — use test mode until you're ready to go live
+</div>
+
+<nav>
+  <div class="logo" onclick="window.location.href='index.html'">
+    <div class="logo-icon"><i class="ti ti-moon-stars" aria-hidden="true"></i></div>
+    Click N Rest
+  </div>
+  <div class="nav-links">
+    <a onclick="window.location.href='index.html'">Hotels</a>
+    <a onclick="window.location.href='index.html#destinationsSection'">Destinations</a>
+    <a>About</a>
+  </div>
+</nav>
+
+<section style="background:#fff;">
+  <a class="back-link" id="changeRoomLink" href="index.html">
+    <i class="ti ti-arrow-left" aria-hidden="true"></i> Change room
+  </a>
+
+  <div class="section-eye">Review &amp; confirm</div>
+  <h2>Almost there</h2>
+  <p class="sub">Double-check your details below, then confirm your booking.</p>
+
+  <div id="bookingMain" class="booking-grid">
+    <div class="booking-card">
+      <h3>Guest details</h3>
+
+      <form id="bookingForm" onsubmit="goToPay(event)">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="firstName">First name</label>
+            <input type="text" id="firstName" autocomplete="given-name">
+          </div>
+          <div class="form-group">
+            <label for="lastName">Last name</label>
+            <input type="text" id="lastName" autocomplete="family-name">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="email">Email address</label>
+            <input type="email" id="email" autocomplete="email">
+          </div>
+        </div>
+        <div class="date-err" id="formErr" style="text-align:left;"></div>
+        <button type="submit" class="primary-btn" id="payBtn">Continue to payment</button>
+        <p class="sub" style="margin:10px 0 0;text-align:center;">
+          <i class="ti ti-lock" aria-hidden="true"></i> You'll enter your card details on Stripe's secure payment page.
+        </p>
+      </form>
+
+      <div id="payVerifying" style="display:none;">
+        <div class="confirm-box">
+          <div class="skeleton" style="height:56px;width:56px;border-radius:50%;margin:0 auto 1rem;"></div>
+          <p class="sub">Confirming your payment…</p>
+        </div>
+      </div>
+
+      <div id="confirmState" style="display:none;">
+        <div class="confirm-box">
+          <div class="confirm-icon"><i class="ti ti-check" aria-hidden="true"></i></div>
+          <h3 style="margin-bottom:6px;">Payment received</h3>
+          <p class="sub" style="margin-bottom:0;">Thanks, <span id="confirmName"></span> — your card has been charged.</p>
+          <div class="confirm-ref" id="confirmRef"></div>
+          <p class="sub" style="margin-top:14px;">A receipt and booking summary will be sent to <span id="confirmEmail"></span>.</p>
+          <div class="info-box" style="text-align:left;margin-top:1.25rem;">
+            <i class="ti ti-info-circle" aria-hidden="true"></i>
+            Payment is processed live through Stripe. The hotel reservation itself still needs to be finalized with Liteapi (automatically once that step is wired up, or manually for now) — we'll confirm by email once it's locked in.
+          </div>
+          <div style="display:flex;gap:10px;justify-content:center;margin-top:1.25rem;flex-wrap:wrap;">
+            <a class="contact-btn" id="emailUsLink" href="mailto:mmauer@clicknrest.net" style="background:#3b82f6;color:#fff;"><i class="ti ti-mail" aria-hidden="true"></i> Email us about this trip</a>
+            <a class="contact-btn" href="index.html"><i class="ti ti-home" aria-hidden="true"></i> Back to home</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="booking-card" id="summaryCard">
+      <h3>Trip summary</h3>
+      <div class="summary-thumb">
+        <div class="summary-thumb-img" id="thumbImg">🏨</div>
+        <div>
+          <div class="summary-thumb-name" id="thumbName">Hotel</div>
+          <div class="summary-thumb-room" id="thumbRoom">Room</div>
+        </div>
+      </div>
+      <div class="summary-row"><span>Dates</span><span id="rowDates">—</span></div>
+      <div class="summary-row"><span>Length of stay</span><span id="rowNights">—</span></div>
+      <div class="summary-row"><span>Guests</span><span id="rowGuests">—</span></div>
+      <div class="summary-row"><span>Cancellation</span><span id="rowRefund">—</span></div>
+      <div class="summary-row total"><span>Total</span><span id="rowTotal">—</span></div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <span>Click N Rest</span> — Verified hotel bookings worldwide · © 2026
+</footer>
+
+<script src="js/common.js"></script>
+<script src="js/booking.js"></script>
+</body>
+</html>

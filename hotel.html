@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hotel rates — Click N Rest</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div class="promo-bar">
+  <i class="ti ti-tag" aria-hidden="true"></i>
+  Sandbox mode active — connect your live Liteapi key to unlock full pricing and availability
+</div>
+
+<nav>
+  <div class="logo" onclick="window.location.href='index.html'">
+    <div class="logo-icon"><i class="ti ti-moon-stars" aria-hidden="true"></i></div>
+    Click N Rest
+  </div>
+  <div class="nav-links">
+    <a onclick="window.location.href='index.html'">Hotels</a>
+    <a onclick="window.location.href='index.html#destinationsSection'">Destinations</a>
+    <a>About</a>
+  </div>
+</nav>
+
+<section style="background:#fff;padding-bottom:1rem;">
+  <div class="back-link" onclick="window.location.href='index.html'">
+    <i class="ti ti-arrow-left" aria-hidden="true"></i> Back to results
+  </div>
+
+  <div class="hotel-header">
+    <div class="hotel-header-img" id="hHeaderImg">🏨</div>
+    <div class="hotel-header-info">
+      <div class="hotel-header-badge">Verified</div>
+      <h1 id="hName">Hotel</h1>
+      <div class="hotel-header-loc" id="hLoc"></div>
+      <div class="hotel-header-stars" id="hStars"></div>
+      <p class="hotel-header-desc" id="hDesc"></p>
+    </div>
+  </div>
+
+  <div class="stay-summary">
+    <div class="stay-summary-items">
+      <div class="stay-summary-item"><label>Check-in</label><span id="sumCheckin">—</span></div>
+      <div class="stay-summary-item"><label>Check-out</label><span id="sumCheckout">—</span></div>
+      <div class="stay-summary-item"><label>Length of stay</label><span id="sumNights">—</span></div>
+      <div class="stay-summary-item"><label>Guests</label><span id="sumGuests">—</span></div>
+    </div>
+    <a class="change-link" href="index.html">Change search</a>
+  </div>
+
+  <div class="info-box" id="defaultDateNote" style="display:none;margin-bottom:1.5rem;">
+    <i class="ti ti-info-circle" aria-hidden="true"></i>
+    No dates were selected on the search page, so we're showing rates for a sample date range. <a class="change-link" href="index.html" style="margin-left:4px;">Pick your own dates</a>
+  </div>
+</section>
+
+<section style="background:#f7f9fc;">
+  <div class="section-eye">Live rates</div>
+  <h2>Available rooms</h2>
+  <p class="sub">Pricing pulled live from Liteapi for your selected dates and guests.</p>
+  <div class="room-list" id="ratesContainer">
+    <div class="room-card"><div class="room-info" style="width:100%;"><div class="skeleton" style="height:70px;"></div></div></div>
+    <div class="room-card"><div class="room-info" style="width:100%;"><div class="skeleton" style="height:70px;"></div></div></div>
+  </div>
+</section>
+
+<div class="contact-strip">
+  <h2>Questions about a booking?</h2>
+  <p>Our team is here to help — reach us directly by email.</p>
+  <a class="contact-btn" href="mailto:mmauer@clicknrest.net"><i class="ti ti-mail" aria-hidden="true"></i> mmauer@clicknrest.net</a>
+</div>
+
+<footer>
+  <span>Click N Rest</span> — Verified hotel bookings worldwide · © 2026
+</footer>
+
+<script src="js/common.js"></script>
+<script src="js/hotel.js"></script>
+</body>
+</html>
